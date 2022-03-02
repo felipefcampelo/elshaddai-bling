@@ -56,11 +56,11 @@ function getProdutoData(codigoProduto) {
         url: "https://www.bling.com.br/services/produtos.server.php?f=obterProduto",
         method: "POST",
         headers: {
-            "Origin": "https://www.bling.com.br",
-            "Referer": "https://www.bling.com.br/produtos.php",
-            "session-token": $("#sessid").val(),
-            "User-Agent": "navigator.userAgent",
-            "Cookie": document.cookie
+            "session-token": $("#sessid").val()
+            // "Origin": "https://www.bling.com.br",
+            // "Referer": "https://www.bling.com.br/produtos.php",
+            // "User-Agent": "navigator.userAgent",
+            // "Cookie": document.cookie
         },
         data: {
         xajax: "obterProduto",
