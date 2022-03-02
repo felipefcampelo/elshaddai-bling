@@ -74,7 +74,9 @@ function createButtons() {
         </div>
     `;
 
-    $("#main-container").append(modalHtml);
+    if ($("#info-modal").length == 0) {
+        $("#main-container").append(modalHtml);
+    }
 }
 
 createButtons();
