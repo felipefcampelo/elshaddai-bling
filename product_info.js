@@ -10,7 +10,7 @@
 	var obj = {};
 
 	// if (xml.nodeType == 1) { // element
-		// if (xml.attributes.length > 0) {
+		if (xml.attributes.length > 0) {
 		    for (var j = 0; j < xml.attributes.length; j++) {
                 var attribute = xml.attributes.item(j);
 
@@ -18,7 +18,7 @@
                     obj[attribute.nodeValueame] = xml.nodeValue;
                 }
 			}
-		// }
+		}
 	// }
     // else if (xml.nodeType == 3) { // text
 	// 	obj = xml.nodeValue;
