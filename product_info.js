@@ -9,20 +9,19 @@
 	// Create the return object
 	var obj = {};
 
-	// if (xml.nodeType == 1) { // element
+	if (xml.nodeType == 1) { // element
+		// do attributes
 		if (xml.attributes.length > 0) {
-		    for (var j = 0; j < xml.attributes.length; j++) {
-                var attribute = xml.attributes.item(j);
+		    obj["@attributes"] = {};
 
-				if (attribute.nodeName == 't') {
-                    obj[attribute.nodeValueame] = xml.nodeValue;
-                }
+			for (var j = 0; j < xml.attributes.length; j++) {
+				var attribute = xml.attributes.item(j);
+				obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
 			}
 		}
-	// }
-    // else if (xml.nodeType == 3) { // text
-	// 	obj = xml.nodeValue;
-	// }
+	} else if (xml.nodeType == 3) { // text
+		obj = xml.nodeValue;
+	}
 
 	// do children
 	if (xml.hasChildNodes()) {
@@ -57,11 +56,11 @@ function getProdutoData(codigoProduto) {
         url: "https://www.bling.com.br/services/produtos.server.php?f=obterProduto",
         method: "POST",
         headers: {
-            "session-token": $("#sessid").val()
-            // "Origin": "https://www.bling.com.br",
-            // "Referer": "https://www.bling.com.br/produtos.php",
-            // "User-Agent": "navigator.userAgent",
-            // "Cookie": document.cookie
+            "Origin": "https://www.bling.com.br",
+            "Referer": "https://www.bling.com.br/produtos.php",
+            "session-token": $("#sessid").val(),
+            "User-Agent": "navigator.userAgent",
+            "Cookie": document.cookie
         },
         data: {
         xajax: "obterProduto",
