@@ -67,7 +67,7 @@ function getProdutoData(codigoProduto) {
             "xajaxargs[]": codigoProduto
         },
         success: function(response) {
-            console.log(xmlToJson(response)); // Converting XML to JSON
+            console.log(xmlToJson(response['xjx']['cmd'])); // Converting XML to JSON
 
 
         }
