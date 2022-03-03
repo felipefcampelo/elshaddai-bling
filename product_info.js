@@ -1,50 +1,7 @@
-// Monta o código JQuery
-// (Estou usando JQuery que já está inserido no código nativo do Bling)
-
 /**
- * Converte XML em JSON
- * @param {*} 
+ * Script responsavel por buscar as informacoes 
+ * de um produto para exibicao na tela de Produtos.
  */
- function xmlToJson(xml) {
-	// Create the return object
-	var obj = {};
-
-	if (xml.nodeType == 1) { // element
-		// do attributes
-		if (xml.attributes.length > 0) {
-		    obj["@attributes"] = {};
-
-			for (var j = 0; j < xml.attributes.length; j++) {
-				var attribute = xml.attributes.item(j);
-				obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-			}
-		}
-	} else if (xml.nodeType == 3) { // text
-		obj = xml.nodeValue;
-	}
-
-	// do children
-	if (xml.hasChildNodes()) {
-		for(var i = 0; i < xml.childNodes.length; i++) {
-			var item = xml.childNodes.item(i);
-			var nodeName = item.nodeName;
-
-			if (typeof(obj[nodeName]) == "undefined") {
-				obj[nodeName] = xmlToJson(item);
-			} else {
-				if (typeof(obj[nodeName].push) == "undefined") {
-					var old = obj[nodeName];
-					obj[nodeName] = [];
-					obj[nodeName].push(old);
-				}
-
-				obj[nodeName].push(xmlToJson(item));
-			}
-		}
-	}
-
-	return obj;
-};
 
 /**
  * Busca os dados do produto em uma requisição de imitação do modo como o Blig requisita
@@ -57,19 +14,38 @@ function getProdutoData(codigoProduto) {
         method: "POST",
         headers: {
             "session-token": $("#sessid").val()
-            // "Origin": "https://www.bling.com.br",
-            // "Referer": "https://www.bling.com.br/produtos.php",
-            // "User-Agent": "navigator.userAgent",
-            // "Cookie": document.cookie
         },
         data: {
         xajax: "obterProduto",
             "xajaxargs[]": codigoProduto
         },
-        success: function(response) {
-            console.log(xmlToJson(response['xjx']['cmd'])); // Converting XML to JSON
-
-
+        success: function(xmldata) {
+        	const parser = new DOMParser();
+            const xmlText = new XMLSerializer().serializeToString(xmldata);
+            const xml = parser.parseFromString(xmlText, "text/xml").documentElement;
+            
+            let infoLivro = [];
+            
+            $(xml).find("cmd").each(function () {
+            	if ($(this).attr('t') == 'nome') {
+                	infoLivro["nome"] = $(this).text();
+                }
+                
+                if ($(this).attr('t') == 'codigo') {
+                	infoLivro["codigo"] = $(this).text();
+                }
+                
+                if ($(this).attr('t') == 'preco') {
+                	infoLivro["preco"] = $(this).text();
+                }
+                
+                if ($(this).attr('t') == 'imagemURL') {
+                	const jsonDataImg = JSON.parse($(this).text());
+                	infoLivro["imagem"] = jsonDataImg['imagens'][0];
+                }
+            });
+            
+            console.log(infoLivro);
         }
     });
 
@@ -83,12 +59,11 @@ function createButtons() {
     $(".context-menu-item .btn-group").each(function() {
         // Product ID
         const produtoId = $(this).parent().parent().attr("id");
-        //const codigoProduto = $("#" + produtoId).find('td span:contains("Código")').next().html();
 
         if (produtoId != "" && produtoId != undefined) {
             $(this).append(
-                `<button id="btn-details-${produtoId}"
-                        onclick="getProdutoData(${produtoId});"
+                `<button id="btn-details-` + produtoId + `"
+                        onclick="getProdutoData(` + produtoId + `);"
                         class="bling-button call-to-action fas fa-plus info-button"
                         style="width: auto; margin: 3px 10px 3px 0;">
                             <span class="text-add hide-on-minimize">
