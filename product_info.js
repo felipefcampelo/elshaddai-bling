@@ -179,7 +179,7 @@ function getProdutoData(codigoProduto) {
             // Percentual de desconto
             let precoFormatado = infoLivro['preco'].replace(",", ".");
             let precoPromocionalFormatado = infoLivro["precoPromocional"].replace(",", ".");
-            const desconto = 100 - (parseInt(precoPromocionalFormatado) * 100) / parseInt(precoFormatado);
+            const desconto = 100 - (parseFloat(precoPromocionalFormatado) * 100) / parseFloat(precoFormatado);
             infoLivro["desconto"] = Math.round(desconto);
             
             // Estoque
