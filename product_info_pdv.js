@@ -26,17 +26,18 @@ document.getElementsByTagName("head")[0].appendChild(styleTable);
 /**
  * Cria um loader na pagina
  */
-let loading = document.createElement('div');
-    loading.setAttribute("id", "elshaddai-loading");
-    loading.style.position = 'fixed';
-    loading.style.top = '50%';
-    loading.style.left = '50%';
-    loading.style.width = '200px';
-    loading.style.height = '200px';
-    loading.style.margin = '-100px 0 0 -100px';
-    loading.style.display = 'none';
-    loading.style.zIndex = '9999';
-    loading.innerHTML = "<img src='https://github.com/felipefcampelo/elshaddai-bling/raw/master/loading.gif'>";
+let loading = document.createElement("div");
+loading.setAttribute("id", "elshaddai-loading");
+loading.style.position = "fixed";
+loading.style.top = "50%";
+loading.style.left = "50%";
+loading.style.width = "200px";
+loading.style.height = "200px";
+loading.style.margin = "-100px 0 0 -100px";
+loading.style.display = "none";
+loading.style.zIndex = "9999";
+loading.innerHTML =
+  "<img src='https://github.com/felipefcampelo/elshaddai-bling/raw/master/loading.gif'>";
 document.body.append(loading);
 
 /**
@@ -49,42 +50,46 @@ let infoLivro = [];
  * @param {string} codigoProduto 
  */
 function buscaPrecoPromocional(codigoProduto) {
-    $.ajax({
-        url: "https://www.bling.com.br/services/produtos.server.php?f=obterVinculoProdutosMultilojas",
-        method: "POST",
-        async: false,
-        headers: {
-            "session-token": $("#sessid").val()
-        },
-        data: {
-            "xajax": "obterVinculoProdutosMultilojas",
-            "xajaxargs[]": codigoProduto
-        },
-        success: function(xmldata) {
-            const parser = new DOMParser();
-            const xmlText = new XMLSerializer().serializeToString(xmldata);
-            const xml = parser.parseFromString(xmlText, "text/xml").documentElement;
-            
-            $(xml).find("cmd").each(function () {
-                let xmlString = $(this).text();
-                
-                if (xmlString.indexOf("montarTabelaVinculoProdutoLoja") >= 0) {
-                    let xmlClean = xmlString.replace("montarTabelaVinculoProdutoLoja(", "");
-                        xmlClean = xmlClean.replace(")", "");
-                        xmlClean = xmlClean.split(", [[");
-                        xmlClean = xmlClean[0];
-                    
-                    const jsonData = JSON.parse(xmlClean);
-                    
-                    for (let index = 0; index <= jsonData.length - 1; index++) {
-                        if (jsonData[index].nomeLoja == 'Livraria Física El Shaddai') {
-                            infoLivro["precoPromocional"] = jsonData[index].precoPromocional;
-                        }
-                    }
-                }
-            });
+  $.ajax({
+    url:
+      "https://www.bling.com.br/services/produtos.server.php?f=obterVinculoProdutosMultilojas",
+    method: "POST",
+    async: false,
+    headers: {
+      "session-token": $("#sessid").val()
+    },
+    data: {
+      xajax: "obterVinculoProdutosMultilojas",
+      "xajaxargs[]": codigoProduto
+    },
+    success: function(xmldata) {
+      const parser = new DOMParser();
+      const xmlText = new XMLSerializer().serializeToString(xmldata);
+      const xml = parser.parseFromString(xmlText, "text/xml").documentElement;
+
+      $(xml).find("cmd").each(function() {
+        let xmlString = $(this).text();
+
+        if (xmlString.indexOf("montarTabelaVinculoProdutoLoja") >= 0) {
+          let xmlClean = xmlString.replace(
+            "montarTabelaVinculoProdutoLoja(",
+            ""
+          );
+          xmlClean = xmlClean.replace(")", "");
+          xmlClean = xmlClean.split(", [[");
+          xmlClean = xmlClean[0];
+
+          const jsonData = JSON.parse(xmlClean);
+
+          for (let index = 0; index <= jsonData.length - 1; index++) {
+            if (jsonData[index].nomeLoja == "Livraria Física El Shaddai") {
+              infoLivro["precoPromocional"] = jsonData[index].precoPromocional;
+            }
+          }
         }
-    });
+      });
+    }
+  });
 }
 
 /**
@@ -92,51 +97,49 @@ function buscaPrecoPromocional(codigoProduto) {
  * @param {string} codigoProduto 
  */
 function buscaEstoque(codigoProduto) {
-    $.ajax({
-        url: "https://www.bling.com.br/services/estoques.server.php?f=listarLancamentos",
-        method: "POST",
-        async: false,
-        headers: {
-            "session-token": $("#sessid").val()
-        },
-        data: {
-            "xajax": "listarLancamentos",
-            "xajaxargs[]": [
-                "ultimos",
-                codigoProduto
-            ],
-            "xajaxs": $("#sessid").val()
-        },
-        success: function(data) {
-            const saldosPorDeposito = data.totais.saldosPorDeposito;
-            
-            for (let i = 0; i <= saldosPorDeposito.length - 1; i++) {
-                // Estoque Geral
-                if (saldosPorDeposito[i].descricao == 'Estoque Geral') {
-                    let estoqueGeral = String(saldosPorDeposito[i].saldo);
-                    
-                    if (estoqueGeral.indexOf(".") >= 0) {
-                        estoqueGeral = estoqueGeral.split(".");
-                        estoqueGeral = estoqueGeral[0];
-                    }
-                    
-                    infoLivro['estoque_geral'] = estoqueGeral;
-                }
-                
-                // Loja Física
-                if (saldosPorDeposito[i].descricao == 'Loja Física') {
-                    let estoqueLojaFisica = String(saldosPorDeposito[i].saldo);
-                    
-                    if (estoqueLojaFisica.indexOf(".") >= 0) {
-                        estoqueLojaFisica = estoqueLojaFisica.split(".");
-                        estoqueLojaFisica = estoqueLojaFisica[0];
-                    }
-                    
-                    infoLivro['estoque_loja_fisica'] = estoqueLojaFisica;
-                }
-            }
+  $.ajax({
+    url:
+      "https://www.bling.com.br/services/estoques.server.php?f=listarLancamentos",
+    method: "POST",
+    async: false,
+    headers: {
+      "session-token": $("#sessid").val()
+    },
+    data: {
+      xajax: "listarLancamentos",
+      "xajaxargs[]": ["ultimos", codigoProduto],
+      xajaxs: $("#sessid").val()
+    },
+    success: function(data) {
+      const saldosPorDeposito = data.totais.saldosPorDeposito;
+
+      for (let i = 0; i <= saldosPorDeposito.length - 1; i++) {
+        // Estoque Geral
+        if (saldosPorDeposito[i].descricao == "Estoque Geral") {
+          let estoqueGeral = String(saldosPorDeposito[i].saldo);
+
+          if (estoqueGeral.indexOf(".") >= 0) {
+            estoqueGeral = estoqueGeral.split(".");
+            estoqueGeral = estoqueGeral[0];
+          }
+
+          infoLivro["estoque_geral"] = estoqueGeral;
         }
-    });
+
+        // Loja Física
+        if (saldosPorDeposito[i].descricao == "Loja Física") {
+          let estoqueLojaFisica = String(saldosPorDeposito[i].saldo);
+
+          if (estoqueLojaFisica.indexOf(".") >= 0) {
+            estoqueLojaFisica = estoqueLojaFisica.split(".");
+            estoqueLojaFisica = estoqueLojaFisica[0];
+          }
+
+          infoLivro["estoque_loja_fisica"] = estoqueLojaFisica;
+        }
+      }
+    }
+  });
 }
 
 /**
@@ -144,116 +147,140 @@ function buscaEstoque(codigoProduto) {
  * @param {string} codigoProduto 
  */
 function getProdutoData(codigoProduto) {
-    $("#elshaddai-loading").show();
-    
-    $.ajax({
-        url: "https://www.bling.com.br/services/produtos.server.php?f=obterProduto",
-        method: "POST",
-        async: true,
-        headers: {
-            "session-token": $("#sessid").val()
-        },
-        data: {
-            "xajax": "obterProduto",
-            "xajaxargs[]": codigoProduto
-        },
-        success: function(xmldata) {
-            const parser = new DOMParser();
-            const xmlText = new XMLSerializer().serializeToString(xmldata);
-            const xml = parser.parseFromString(xmlText, "text/xml").documentElement;
-            
-            $(xml).find("cmd").each(function () {
-                if ($(this).attr('t') == 'nome') {
-                    infoLivro["nome"] = $(this).text();
-                }
-                
-                if ($(this).attr('t') == 'codigo') {
-                    infoLivro["codigo"] = $(this).text();
-                }
-                
-                if ($(this).attr('t') == 'preco') {
-                    infoLivro["preco"] = $(this).text();
-                }
-                
-                if ($(this).attr('t') == 'imagemURL') {
-                    const jsonDataImg = JSON.parse($(this).text());
-                    infoLivro["imagem"] = jsonDataImg['imagens'][0];
-                }
-            });
-            
-            // Preco Promocional
-            buscaPrecoPromocional(codigoProduto);
-            
-            // Percentual de desconto
-            let precoFormatado = infoLivro['preco'].replace(",", ".");
-            let precoPromocionalFormatado = infoLivro["precoPromocional"].replace(",", ".");
-            const desconto = 100 - (parseFloat(precoPromocionalFormatado) * 100) / parseFloat(precoFormatado);
-            infoLivro["desconto"] = Math.round(desconto);
-            
-            // Estoque
-            buscaEstoque(codigoProduto);
-            
-            // Coloca os dados no modal e exibe
-            // Titulo
-            $("#info-modal .modal-title").html('');
-            $("#info-modal .modal-title").html(infoLivro["nome"]);
-            
-            // Imagem
-            $("#info-modal .livro-imagem").html('');
-            $("#info-modal .livro-imagem").html("<img src='" + infoLivro["imagem"] + "' width='100%'>");
-            
-            // Info
-            $("#info-modal .livro-info").html('');
-            $("#info-modal .livro-info").html(`
+  $("#elshaddai-loading").show();
+
+  $.ajax({
+    url: "https://www.bling.com.br/services/produtos.server.php?f=obterProduto",
+    method: "POST",
+    async: true,
+    headers: {
+      "session-token": $("#sessid").val()
+    },
+    data: {
+      xajax: "obterProduto",
+      "xajaxargs[]": codigoProduto
+    },
+    success: function(xmldata) {
+      const parser = new DOMParser();
+      const xmlText = new XMLSerializer().serializeToString(xmldata);
+      const xml = parser.parseFromString(xmlText, "text/xml").documentElement;
+
+      $(xml).find("cmd").each(function() {
+        if ($(this).attr("t") == "nome") {
+          infoLivro["nome"] = $(this).text();
+        }
+
+        if ($(this).attr("t") == "codigo") {
+          infoLivro["codigo"] = $(this).text();
+        }
+
+        if ($(this).attr("t") == "preco") {
+          infoLivro["preco"] = $(this).text();
+        }
+
+        if ($(this).attr("t") == "imagemURL") {
+          const jsonDataImg = JSON.parse($(this).text());
+          infoLivro["imagem"] = jsonDataImg["imagens"][0];
+        }
+      });
+
+      // Preco Promocional
+      buscaPrecoPromocional(codigoProduto);
+
+      // Percentual de desconto
+      let precoFormatado = infoLivro["preco"].replace(",", ".");
+      let precoPromocionalFormatado = infoLivro["precoPromocional"].replace(
+        ",",
+        "."
+      );
+      const desconto =
+        100 -
+        parseFloat(precoPromocionalFormatado) *
+          100 /
+          parseFloat(precoFormatado);
+      infoLivro["desconto"] = Math.round(desconto);
+
+      // Estoque
+      buscaEstoque(codigoProduto);
+
+      // Coloca os dados no modal e exibe
+      // Titulo
+      $("#info-modal .modal-title").html("");
+      $("#info-modal .modal-title").html(infoLivro["nome"]);
+
+      // Imagem
+      $("#info-modal .livro-imagem").html("");
+      $("#info-modal .livro-imagem").html(
+        "<img src='" + infoLivro["imagem"] + "' width='100%'>"
+      );
+
+      // Info
+      $("#info-modal .livro-info").html("");
+      $("#info-modal .livro-info").html(
+        `
                 <table class="table table-bordered table-striped table-livro-info">
                     <tbody>
                         <tr>
                             <td>Código</td>
-                            <td>` + infoLivro["codigo"] + `</td>
+                            <td>` +
+          infoLivro["codigo"] +
+          `</td>
                         </tr>
                         <tr>
                             <td>Título</td>
-                            <td>` + infoLivro["nome"] + `</td>
+                            <td>` +
+          infoLivro["nome"] +
+          `</td>
                         </tr>
                         <tr>
                             <td>Preço de capa</td>
-                            <td>R$ ` + infoLivro["preco"] + `</td>
+                            <td>R$ ` +
+          infoLivro["preco"] +
+          `</td>
                         </tr>
                         <tr>
                             <td>Preço com desconto</td>
-                            <td>R$ ` + infoLivro["precoPromocional"] + `</td>
+                            <td>R$ ` +
+          infoLivro["precoPromocional"] +
+          `</td>
                         </tr>
                         <tr>
                             <td>Desconto aplicado</td>
-                            <td>` + infoLivro["desconto"] + `%</td>
+                            <td>` +
+          infoLivro["desconto"] +
+          `%</td>
                         </tr>
                         <tr>
                             <td>Estoque geral</td>
-                            <td>` + infoLivro["estoque_geral"] + ` unidade(s)</td>
+                            <td>` +
+          infoLivro["estoque_geral"] +
+          ` unidade(s)</td>
                         </tr>
                         <tr>
                             <td>Estoque da loja física</td>
-                            <td>` + infoLivro["estoque_loja_fisica"] + ` unidade(s)</td>
+                            <td>` +
+          infoLivro["estoque_loja_fisica"] +
+          ` unidade(s)</td>
                         </tr>
                     </tbody>
                 </table>
-            `);
-            
-        }
-    });
+            `
+      );
+    }
+  });
 
-    setTimeout(function () {
-        $("#elshaddai-loading").hide();
-        $("#info-modal").modal("show");
-    }, 1000);
+  setTimeout(function() {
+    $("#elshaddai-loading").hide();
+    $("#info-modal").modal("show");
+  }, 1000);
 }
 
 /**
  * Function que cria o modal
  */
 function createModal() {
-    // Modal de informação
-    const modalHtml = `
+  // Modal de informação
+  const modalHtml = `
         <div class="modal fade" id="info-modal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -281,9 +308,9 @@ function createModal() {
         </div>
     `;
 
-    if ($("#info-modal").length == 0) {
-        $("#main-container").append(modalHtml);
-    }
+  if ($("#info-modal").length == 0) {
+    $("#main-container").append(modalHtml);
+  }
 }
 createModal();
 
@@ -292,26 +319,37 @@ createModal();
  * @param {string} codigoProduto 
  */
 function createButton(codigoProduto) {
-    $.ajax({
-        url: "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
-        method: "GET",
-        success: function(response) {
-            const data = jQuery.parseJSON(response);
-            const produtoId = data[0].id; 
+  $.ajax({
+    url:
+      "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" +
+      codigoProduto +
+      "&type=CODIGO",
+    method: "GET",
+    success: function(response) {
+      const data = jQuery.parseJSON(response);
+      const produtoId = data[0].id;
 
-            $("#nome_produto").after(`
-                <button id="btn-details-` + produtoId + `"
-                    onclick="getProdutoData(` + produtoId + `);"
+      $("#nome_produto").after(
+        `
+                <button id="btn-details-` +
+          produtoId +
+          `"
+                    onclick="getProdutoData(` +
+          produtoId +
+          `);"
                     class="bling-button call-to-action info-button"
                     style="width: auto; margin: 3px 10px 3px 0;"
-                    data-codigo="` + codigoProduto + `">
+                    data-codigo="` +
+          codigoProduto +
+          `">
                     <span class="text-add hide-on-minimize">
                         INFO
                     </span>
                 </button>
-            `);
-        }
-    });
+            `
+      );
+    }
+  });
 }
 
 /**
@@ -319,39 +357,42 @@ function createButton(codigoProduto) {
  * @param {string} codigoProduto 
  */
 function updateButton(codigoProduto) {
-    $.ajax({
-        url: "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
-        method: "GET",
-        success: function(response) {
-            const data = jQuery.parseJSON(response);
-            const produtoId = data[0].id;
-                        
-            $(".info-button").attr("id", "btn-details-" + codigoProduto);
-            $(".info-button").attr("onclick", "getProdutoData(" + produtoId + ");");
-            $(".info-button").attr("data-codigo", codigoProduto);
-        }
-    });
+  $.ajax({
+    url:
+      "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" +
+      codigoProduto +
+      "&type=CODIGO",
+    method: "GET",
+    success: function(response) {
+      const data = jQuery.parseJSON(response);
+      const produtoId = data[0].id;
+
+      $(".info-button").attr("id", "btn-details-" + codigoProduto);
+      $(".info-button").attr("onclick", "getProdutoData(" + produtoId + ");");
+      $(".info-button").attr("data-codigo", codigoProduto);
+    }
+  });
 }
 
 /**
  * Execucao das functions que criam ou atualizam o botao
  */
-setInterval(function () {
-    const nomeProdutoElement = $("#nome_produto").html();
-    const infoButtonElementLength = $(".info-button").length;
-    
-    if (nomeProdutoElement != undefined && nomeProdutoElement != "") {
-        const codigoProduto = $("#nome_produto").attr("attr-codigo");
+setInterval(function() {
+  const nomeProdutoElement = $("#nome_produto").html();
+  const infoButtonElementLength = $(".info-button").length;
 
-        if (infoButtonElementLength == 0) {
-            createButton(codigoProduto);
-        } else {
-            const codigoProdutoAtual = $(".info-button").attr("data-codigo");
-            if (codigoProduto != codigoProdutoAtual) {
-                updateButton(codigoProduto)
-            }
-        }
+  if (nomeProdutoElement != undefined && nomeProdutoElement != "") {
+    const codigoProduto = $("#nome_produto").attr("attr-codigo");
+
+    if (infoButtonElementLength == 0) {
+      createButton(codigoProduto);
     } else {
-        $(".info-button").remove();
+      const codigoProdutoAtual = $(".info-button").attr("data-codigo");
+      if (codigoProduto != codigoProdutoAtual) {
+        updateButton(codigoProduto);
+      }
     }
+  } else {
+    $(".info-button").remove();
+  }
 }, 500);
