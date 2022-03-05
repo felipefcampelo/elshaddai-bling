@@ -261,8 +261,8 @@ function createModal() {
                         <h4 class="modal-title" style="font-weight: 700; font-size: 14pt !important;"></h4>
                     </div>
                     <div class="modal-body"
-                    	 style="margin-right: 0 !important; 
-                         		position: relative !important;
+                        style="margin-right: 0 !important; 
+                                position: relative !important;
                                 overflow: unset !important;
                                 max-height: 100% !important;">
                         <div class="row">
@@ -271,8 +271,8 @@ function createModal() {
                         </div>
                     </div>
                     <div class="modal-footer"
-                    	 style="border-top: 1px solid #e5e5e5 !important; 
-                         		position: unset !important;
+                        style="border-top: 1px solid #e5e5e5 !important; 
+                                position: unset !important;
                                 min-width: 100% !important;">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                     </div>
@@ -287,42 +287,71 @@ function createModal() {
 }
 createModal();
 
-// Cria o botão no momento em que um produto é buscado
-var nomeProdutoElement = $("#nome_produto").html();
-var infoButtonElementLength = $(".info-button").length;
+/**
+ * Cria o botao de informacoes
+ * @param {string} codigoProduto 
+ */
+function createButton(codigoProduto) {
+    $.ajax({
+        url: "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
+        method: "GET",
+        success: function(response) {
+            const data = jQuery.parseJSON(response);
+            const produtoId = data[0].id; 
 
+            $("#nome_produto").after(`
+                <button id="btn-details-` + produtoId + `"
+                    onclick="getProdutoData(` + produtoId + `);"
+                    class="bling-button call-to-action info-button"
+                    style="width: auto; margin: 3px 10px 3px 0;"
+                    data-codigo="` + codigoProduto + `">
+                    <span class="text-add hide-on-minimize">
+                        INFO
+                    </span>
+                </button>
+            `);
+        }
+    });
+}
+
+/**
+ * Atualiza o id do produto e o codigo no botao
+ * @param {string} codigoProduto 
+ */
+function updateButton(codigoProduto) {
+    $.ajax({
+        url: "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
+        method: "GET",
+        success: function(response) {
+            const data = jQuery.parseJSON(response);
+            const produtoId = data[0].id;
+                        
+            $(".info-button").attr("id", "btn-details-" + codigoProduto);
+            $(".info-button").attr("onclick", "getProdutoData(" + produtoId + ");");
+            $(".info-button").attr("data-codigo", codigoProduto);
+        }
+    });
+}
+
+/**
+ * Execucao das functions que criam ou atualizam o botao
+ */
 setInterval(function () {
-	nomeProdutoElement = $("#nome_produto").html();
-    infoButtonElementLength = $(".info-button").length;
+    const nomeProdutoElement = $("#nome_produto").html();
+    const infoButtonElementLength = $(".info-button").length;
     
     if (nomeProdutoElement != undefined && nomeProdutoElement != "") {
-        setTimeout(function () {
-            if (infoButtonElementLength == 0) {
-                // Codigo do produto
-                const codigoProduto = $("#nome_produto").attr("attr-codigo");
+        const codigoProduto = $("#nome_produto").attr("attr-codigo");
 
-                $.ajax({
-                    url: "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
-                    method: "GET",
-                    success: function(response) {
-                        const data = jQuery.parseJSON(response);
-                        const produtoId = data[0].id; 
-                        
-                        $("#nome_produto").after(`
-                            <button id="btn-details-` + produtoId + `"
-                                onclick="getProdutoData(` + produtoId + `);"
-                                class="bling-button call-to-action info-button"
-                                style="width: auto; margin: 3px 10px 3px 0;">
-                                <span class="text-add hide-on-minimize">
-                                    INFO
-                                 </span>
-                            </button>
-                        `);
-                    }
-                });
+        if (infoButtonElementLength == 0) {
+            createButton(codigoProduto);
+        } else {
+            const codigoProdutoAtual = $(".info-button").attr("data-codigo");
+            if (codigoProduto != codigoProdutoAtual) {
+                updateButton(codigoProduto)
             }
-        }, 1000);
+        }
     } else {
-  		$(".info-button").remove();
+        $(".info-button").remove();
     }
 }, 500);
