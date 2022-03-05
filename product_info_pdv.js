@@ -5,13 +5,6 @@
  * Utilizando JQuery como biblioteca, pois ja esta inserida no codigo do Bling
  */
 
-/*
- * Criação do script para gerar botões 
- * e ações do botão e conexão com API
- * 
- * Utilizando JQuery como biblioteca, pois ja esta inserida no codigo do Bling
- */
-
 /**
  * Cria um estilo para a tabela de informacoes do livro
  */
