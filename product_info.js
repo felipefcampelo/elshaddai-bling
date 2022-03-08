@@ -269,12 +269,21 @@ function createButtons() {
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" style="font-weight: 700; font-size: 14pt !important;"></h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button 
+                            type="button" 
+                            class="close" 
+                            data-dismiss="modal"
+                            style="border-radius: 5px; background-color: #777!important; 
+                            color: #fff; opacity: 1; position: absolute; right: 17px; 
+                            top: 17px;"
+                        >
+                            &times;
+                        </button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-lg-6 col-md-12 mb-4 livro-imagem"></div>
-                            <div class="col-lg-6 col-md-12 livro-info"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 mb-4 livro-imagem"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 livro-info"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
