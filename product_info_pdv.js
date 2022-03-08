@@ -245,7 +245,7 @@ function createModal() {
     // Modal de informação
     const modalHtml = `
         <div class="modal fade" id="info-modal" tabindex="-1">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" style="font-weight: 700; font-size: 14pt !important;"></h4>
@@ -267,8 +267,8 @@ function createModal() {
                                 overflow: unset !important;
                                 max-height: 100% !important;">
                         <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 mb-4 livro-imagem"></div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 livro-info"></div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 mb-4 livro-imagem"></div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 livro-info"></div>
                         </div>
                     </div>
                     <div class="modal-footer"
