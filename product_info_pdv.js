@@ -206,15 +206,15 @@ function getProdutoData(codigoProduto) {
                             <td>` + infoLivro["nome"] + `</td>
                         </tr>
                         <tr>
-                            <td>Preço de capa</td>
+                            <td>Preço capa</td>
                             <td>R$ ` + infoLivro["preco"] + `</td>
                         </tr>
                         <tr>
-                            <td>Preço com desconto</td>
+                            <td>Preço desc.</td>
                             <td>R$ ` + infoLivro["precoPromocional"] + `</td>
                         </tr>
                         <tr>
-                            <td>Desconto aplicado</td>
+                            <td>Desconto</td>
                             <td>` + infoLivro["desconto"] + `%</td>
                         </tr>
                         <tr>
@@ -222,7 +222,7 @@ function getProdutoData(codigoProduto) {
                             <td>` + infoLivro["estoque_geral"] + ` unidade(s)</td>
                         </tr>
                         <tr>
-                            <td>Estoque da loja física</td>
+                            <td>Estoque lj. física</td>
                             <td>` + infoLivro["estoque_loja_fisica"] + ` unidade(s)</td>
                         </tr>
                     </tbody>
@@ -267,8 +267,8 @@ function createModal() {
                                 overflow: unset !important;
                                 max-height: 100% !important;">
                         <div class="row">
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 mb-4 livro-imagem"></div>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 livro-info"></div>
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 mb-4 livro-imagem"></div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 livro-info"></div>
                         </div>
                     </div>
                     <div class="modal-footer"
