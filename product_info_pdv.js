@@ -255,7 +255,8 @@ function createModal() {
                             data-dismiss="modal"
                             style="border-radius: 5px; background-color: #777!important; 
                             color: #fff; opacity: 1; position: absolute; right: 17px; 
-                            top: 17px;"
+                            top: 17px; width: 25px !important; height: 25px !important;
+                            z-index: 999999 !important;"
                         >
                             &times;
                         </button>
