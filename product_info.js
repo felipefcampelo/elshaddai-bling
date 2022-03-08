@@ -269,7 +269,7 @@ function createButtons() {
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" style="font-weight: 700; font-size: 14pt !important;"></h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
