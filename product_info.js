@@ -178,10 +178,10 @@ function getProdutoData(codigoProduto) {
             
             // Percentual de desconto
             let precoFormatado = infoLivro['preco'].replace(".", "");
-                precoFormatado = infoLivro['preco'].replace(",", ".");
+                precoFormatado = precoFormatado.replace(",", ".");
             
             let precoPromocionalFormatado = infoLivro["precoPromocional"].replace(".", "");
-                precoPromocionalFormatado = infoLivro["precoPromocional"].replace(",", ".");
+                precoPromocionalFormatado = precoPromocionalFormatado.replace(",", ".");
             
             if (precoPromocionalFormatado == '0.00') {
                 const desconto = "-";
