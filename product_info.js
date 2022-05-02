@@ -179,9 +179,13 @@ function getProdutoData(codigoProduto) {
             // Percentual de desconto
             let precoFormatado = infoLivro['preco'].replace(",", ".");
             let precoPromocionalFormatado = infoLivro["precoPromocional"].replace(",", ".");
-            console.log(precoPromocionalFormatado);
-            const desconto = 100 - (parseFloat(precoPromocionalFormatado) * 100) / parseFloat(precoFormatado);
-            infoLivro["desconto"] = Math.round(desconto);
+            
+            if (precoPromocionalFormatado == '0.00') {
+                const desconto = "-";
+            } else {
+                const desconto = 100 - (parseFloat(precoPromocionalFormatado) * 100) / parseFloat(precoFormatado);
+                infoLivro["desconto"] = Math.round(desconto);
+            }
             
             // Estoque
             buscaEstoque(codigoProduto);
