@@ -182,6 +182,7 @@ function getProdutoData(codigoProduto) {
             
             if (precoPromocionalFormatado == '0.00') {
                 const desconto = "-";
+                infoLivro["desconto"] = desconto;
             } else {
                 const desconto = 100 - (parseFloat(precoPromocionalFormatado) * 100) / parseFloat(precoFormatado);
                 infoLivro["desconto"] = Math.round(desconto);
