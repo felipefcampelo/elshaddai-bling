@@ -57,7 +57,7 @@ function buscaPrecoPromocional(codigoProduto) {
     const jsonData = JSON.parse(lojas);
     const lojasJson = jsonData.vinculosLojas;
     
-    for (let i = 0; i <= lojasJson.length; i++) {
+    for (let i = 0; i <= lojasJson.length - 1; i++) {
         if (lojasJson[i].nomeLoja == 'Livraria Física El Shaddai') {
             const precoPromocional = lojasJson[i].precoPromocional;
             infoLivro["precoPromocional"] = precoPromocional;
