@@ -50,7 +50,7 @@ function buscaPrecoPromocional(codigoProduto) {
         },
         data: {
             "xajax": "obterVinculoProdutosMultilojas",
-            "xajaxargs[]": "13193260132"
+            "xajaxargs[]": codigoProduto
         }
     }).responseText;
     
