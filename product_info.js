@@ -44,7 +44,7 @@ function buscaPrecoPromocional(codigoProduto) {
     const lojas = $.ajax({
         url: "https://www.bling.com.br/services/produtos.server.php?f=obterVinculoProdutosMultilojas",
         method: "POST",
-        async: false,
+        async: true,
         headers: {
             "session-token": $("#sessid").val()
         },
