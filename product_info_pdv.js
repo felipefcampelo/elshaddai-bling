@@ -337,7 +337,7 @@ function updateButton(codigoProduto) {
 /**
  * Executa as functions para criar ou atualizar o botao
  */
-setInterval(function () {
+setTimeout(function () {
 	const nomeProdutoElement = $("#nome_produto").html();
     const infoButtonElementLength = $(".info-button").length;
     
