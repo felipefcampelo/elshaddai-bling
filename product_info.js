@@ -138,110 +138,107 @@ function buscaEstoque(codigoProduto) {
 function getProdutoData(codigoProduto) {
     $("#elshaddai-loading").show();
     
-    $.ajax({
+    const xmldata = $.ajax({
         url: "https://www.bling.com.br/services/produtos.server.php?f=obterProduto",
         method: "POST",
-        async: true,
+        async: false,
         headers: {
             "session-token": $("#sessid").val()
         },
         data: {
             "xajax": "obterProduto",
             "xajaxargs[]": codigoProduto
-        },
-        success: function(xmldata) {
-            const parser = new DOMParser();
-            const xmlText = new XMLSerializer().serializeToString(xmldata);
-            const xml = parser.parseFromString(xmlText, "text/xml").documentElement;
+        }
+    }).responseText;
+
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmldata, "text/xml").documentElement;
             
-            $(xml).find("cmd").each(function () {
-                if ($(this).attr('t') == 'nome') {
-                    infoLivro["nome"] = $(this).text();
-                }
-                
-                if ($(this).attr('t') == 'codigo') {
-                    infoLivro["codigo"] = $(this).text();
-                }
-                
-                if ($(this).attr('t') == 'preco') {
-                    infoLivro["preco"] = $(this).text();
-                }
-                
-                if ($(this).attr('t') == 'imagemURL') {
-                    const jsonDataImg = JSON.parse($(this).text());
-                    infoLivro["imagem"] = jsonDataImg['imagens'][0];
-                }
-            });
-            
-            // Preco Promocional
-            buscaPrecoPromocional(codigoProduto);
-            
-            // Percentual de desconto
-            let precoFormatado = infoLivro['preco'].replace(".", "");
-                precoFormatado = precoFormatado.replace(",", ".");
-            
-            let precoPromocionalFormatado = infoLivro["precoPromocional"].replace(".", "");
-                precoPromocionalFormatado = precoPromocionalFormatado.replace(",", ".");
-            
-            if (precoPromocionalFormatado == '0.00') {
-                const desconto = "-";
-                infoLivro["desconto"] = desconto;
-            } else {
-                const desconto = 100 - (parseFloat(precoPromocionalFormatado) * 100) / parseFloat(precoFormatado);
-                infoLivro["desconto"] = Math.round(desconto);
-            }
-            
-            // Estoque
-            buscaEstoque(codigoProduto);
-            
-            // Coloca os dados no modal e exibe
-            // Titulo
-            $("#info-modal .modal-title").html('');
-            $("#info-modal .modal-title").html(infoLivro["nome"]);
-            
-            // Imagem
-            $("#info-modal .livro-imagem").html('');
-            $("#info-modal .livro-imagem").html("<img src='" + infoLivro["imagem"] + "' width='100%'>");
-            
-            // Info
-            $("#info-modal .livro-info").html('');
-            $("#info-modal .livro-info").html(`
-                <table class="table table-bordered table-striped table-livro-info">
-                    <tbody>
-                        <tr>
-                            <td>Código</td>
-                            <td>` + infoLivro["codigo"] + `</td>
-                        </tr>
-                        <tr>
-                            <td>Título</td>
-                            <td>` + infoLivro["nome"] + `</td>
-                        </tr>
-                        <tr>
-                            <td>Preço capa</td>
-                            <td>R$ ` + infoLivro["preco"] + `</td>
-                        </tr>
-                        <tr>
-                            <td>Preço desc.</td>
-                            <td>R$ ` + infoLivro["precoPromocional"] + `</td>
-                        </tr>
-                        <tr>
-                            <td>Desconto</td>
-                            <td>` + infoLivro["desconto"] + `%</td>
-                        </tr>
-                        <tr>
-                            <td>Estoque geral</td>
-                            <td>` + infoLivro["estoque_geral"] + ` unidade(s)</td>
-                        </tr>
-                        <tr>
-                            <td>Estoque lj. física</td>
-                            <td>` + infoLivro["estoque_loja_fisica"] + ` unidade(s)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `);
-            
+    $(xml).find("cmd").each(function () {
+        if ($(this).attr('t') == 'nome') {
+            infoLivro["nome"] = $(this).text();
+        }
+        
+        if ($(this).attr('t') == 'codigo') {
+            infoLivro["codigo"] = $(this).text();
+        }
+        
+        if ($(this).attr('t') == 'preco') {
+            infoLivro["preco"] = $(this).text();
+        }
+        
+        if ($(this).attr('t') == 'imagemURL') {
+            const jsonDataImg = JSON.parse($(this).text());
+            infoLivro["imagem"] = jsonDataImg['imagens'][0];
         }
     });
+    
+    // Preco Promocional
+    buscaPrecoPromocional(codigoProduto);
+    
+    // Percentual de desconto
+    let precoFormatado = infoLivro['preco'].replace(".", "");
+        precoFormatado = precoFormatado.replace(",", ".");
+    
+    let precoPromocionalFormatado = infoLivro["precoPromocional"].replace(".", "");
+        precoPromocionalFormatado = precoPromocionalFormatado.replace(",", ".");
+    
+    if (precoPromocionalFormatado == '0.00') {
+        const desconto = "-";
+        infoLivro["desconto"] = desconto;
+    } else {
+        const desconto = 100 - (parseFloat(precoPromocionalFormatado) * 100) / parseFloat(precoFormatado);
+        infoLivro["desconto"] = Math.round(desconto);
+    }
+    
+    // Estoque
+    buscaEstoque(codigoProduto);
+    
+    // Coloca os dados no modal e exibe
+    // Titulo
+    $("#info-modal .modal-title").html('');
+    $("#info-modal .modal-title").html(infoLivro["nome"]);
+    
+    // Imagem
+    $("#info-modal .livro-imagem").html('');
+    $("#info-modal .livro-imagem").html("<img src='" + infoLivro["imagem"] + "' width='100%'>");
+    
+    // Info
+    $("#info-modal .livro-info").html('');
+    $("#info-modal .livro-info").html(`
+        <table class="table table-bordered table-striped table-livro-info">
+            <tbody>
+                <tr>
+                    <td>Código</td>
+                    <td>` + infoLivro["codigo"] + `</td>
+                </tr>
+                <tr>
+                    <td>Título</td>
+                    <td>` + infoLivro["nome"] + `</td>
+                </tr>
+                <tr>
+                    <td>Preço capa</td>
+                    <td>R$ ` + infoLivro["preco"] + `</td>
+                </tr>
+                <tr>
+                    <td>Preço desc.</td>
+                    <td>R$ ` + infoLivro["precoPromocional"] + `</td>
+                </tr>
+                <tr>
+                    <td>Desconto</td>
+                    <td>` + infoLivro["desconto"] + `%</td>
+                </tr>
+                <tr>
+                    <td>Estoque geral</td>
+                    <td>` + infoLivro["estoque_geral"] + ` unidade(s)</td>
+                </tr>
+                <tr>
+                    <td>Estoque lj. física</td>
+                    <td>` + infoLivro["estoque_loja_fisica"] + ` unidade(s)</td>
+                </tr>
+            </tbody>
+        </table>
+    `);
 
     setTimeout(function () {
         $("#elshaddai-loading").hide();
