@@ -294,7 +294,7 @@ createModal();
  */
 function createButton(codigoProduto) {
     $.ajax({
-        url: "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
+        url: "https://www.bling.com.br/services/produtos.lookup.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
         method: "GET",
         success: function(response) {
             const data = jQuery.parseJSON(response);
@@ -321,7 +321,7 @@ function createButton(codigoProduto) {
  */
 function updateButton(codigoProduto) {
 	$.ajax({
-		url: "https://www.bling.com.br/services/produtos.lookup.new.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
+		url: "https://www.bling.com.br/services/produtos.lookup.php?apenasVenda=S&term=" + codigoProduto + "&type=CODIGO",
         method: "GET",
         success: function(response) {
 	        const data = jQuery.parseJSON(response);
@@ -337,7 +337,7 @@ function updateButton(codigoProduto) {
 /**
  * Executa as functions para criar ou atualizar o botao
  */
-setTimeout(function () {
+setInterval(function () {
 	const nomeProdutoElement = $("#nome_produto").html();
     const infoButtonElementLength = $(".info-button").length;
     
