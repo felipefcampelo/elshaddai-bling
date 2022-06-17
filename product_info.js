@@ -41,7 +41,7 @@ let infoLivro = [];
  * @param {string} codigoProduto 
  */
 function buscaPrecoPromocional(codigoProduto) {
-    $.ajax({
+    const xmldata = $.ajax({
         url: "https://www.bling.com.br/services/produtos.server.php?f=obterVinculoProdutosMultilojas",
         method: "POST",
         async: false,
@@ -51,30 +51,28 @@ function buscaPrecoPromocional(codigoProduto) {
         data: {
             "xajax": "obterVinculoProdutosMultilojas",
             "xajaxargs[]": codigoProduto
-        },
-        success: function(xmldata) {
-            const parser = new DOMParser();
-            const xmlText = new XMLSerializer().serializeToString(xmldata);
-            const xml = parser.parseFromString(xmlText, "text/xml").documentElement;
+        }
+    }).responseText;
+
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmldata, "text/xml").documentElement;
             
-            $(xml).find("cmd").each(function () {
-                let xmlString = $(this).text();
-                
-                if (xmlString.indexOf("montarTabelaVinculoProdutoLoja") >= 0) {
-                    let xmlClean = xmlString.replace("montarTabelaVinculoProdutoLoja(", "");
-                        xmlClean = xmlClean.replace(")", "");
-                        xmlClean = xmlClean.split(", [[");
-                        xmlClean = xmlClean[0];
-                    
-                    const jsonData = JSON.parse(xmlClean);
-                    
-                    for (let index = 0; index <= jsonData.length - 1; index++) {
-                        if (jsonData[index].nomeLoja == 'Livraria Física El Shaddai') {
-                            infoLivro["precoPromocional"] = jsonData[index].precoPromocional;
-                        }
-                    }
+    $(xml).find("cmd").each(function () {
+        let xmlString = $(this).text();
+        
+        if (xmlString.indexOf("montarTabelaVinculoProdutoLoja") >= 0) {
+            let xmlClean = xmlString.replace("montarTabelaVinculoProdutoLoja(", "");
+                xmlClean = xmlClean.replace(")", "");
+                xmlClean = xmlClean.split(", [[");
+                xmlClean = xmlClean[0];
+            
+            const jsonData = JSON.parse(xmlClean);
+            
+            for (let index = 0; index <= jsonData.length - 1; index++) {
+                if (jsonData[index].nomeLoja == 'Livraria Física El Shaddai') {
+                    infoLivro["precoPromocional"] = jsonData[index].precoPromocional;
                 }
-            });
+            }
         }
     });
 }
