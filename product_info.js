@@ -41,7 +41,7 @@ let infoLivro = [];
  * @param {string} codigoProduto 
  */
 function buscaPrecoPromocional(codigoProduto) {
-    const xmldata = $.ajax({
+    const lojas = $.ajax({
         url: "https://www.bling.com.br/services/produtos.server.php?f=obterVinculoProdutosMultilojas",
         method: "POST",
         async: false,
@@ -50,31 +50,19 @@ function buscaPrecoPromocional(codigoProduto) {
         },
         data: {
             "xajax": "obterVinculoProdutosMultilojas",
-            "xajaxargs[]": codigoProduto
+            "xajaxargs[]": "13193260132"
         }
     }).responseText;
-
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmldata, "text/xml").documentElement;
-            
-    $(xml).find("cmd").each(function () {
-        let xmlString = $(this).text();
-        
-        if (xmlString.indexOf("montarTabelaVinculoProdutoLoja") >= 0) {
-            let xmlClean = xmlString.replace("montarTabelaVinculoProdutoLoja(", "");
-                xmlClean = xmlClean.replace(")", "");
-                xmlClean = xmlClean.split(", [[");
-                xmlClean = xmlClean[0];
-            
-            const jsonData = JSON.parse(xmlClean);
-            
-            for (let index = 0; index <= jsonData.length - 1; index++) {
-                if (jsonData[index].nomeLoja == 'Livraria Física El Shaddai') {
-                    infoLivro["precoPromocional"] = jsonData[index].precoPromocional;
-                }
-            }
+    
+    const jsonData = JSON.parse(lojas);
+    const lojasJson = jsonData.vinculosLojas;
+    
+    for (let i = 0; i <= lojasJson.length; i++) {
+        if (lojasJson[i].nomeLoja == 'Livraria Física El Shaddai') {
+            const precoPromocional = lojasJson[i].precoPromocional;
+            infoLivro["precoPromocional"] = precoPromocional;
         }
-    });
+    }
 }
 
 /**
