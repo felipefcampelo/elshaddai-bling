@@ -331,4 +331,6 @@ function detectaPesquisa() {
         }
     });
 }
-detectaPesquisa();
+setTimeout(function () {
+    detectaPesquisa();
+}, 1000);
