@@ -235,7 +235,7 @@ function getProdutoData(codigoProduto) {
 /**
  * Function que cria os botões de +INFO em cada produto
  */
-function createButtons() {
+window.createButtons = function() {
     $(".context-menu-item .btn-group").each(function() {
         // Product ID
         const produtoId = $(this).parent().parent().attr("id");
