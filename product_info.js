@@ -322,13 +322,18 @@ createButtons();
  * Function para detectar quando a pesquisa acontece
  */ 
 setTimeout(function () {
-    const miniPesquisa = document.getElementById('pesquisa-mini');
-    miniPesquisa.addEventListener('keydown', function(event) {
+    $("#pesquisa-mini").on("keydown", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault(); // Previne a ação padrão (se houver)
             setTimeout(function () {
                 createButtons();
             }, 1000);
         }
+    });
+
+    $("#btn-mini-search").on("click", function () {
+        setTimeout(function () {
+            createButtons();
+        }, 1000);
     });
 }, 1000);
