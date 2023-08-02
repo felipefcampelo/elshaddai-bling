@@ -326,8 +326,9 @@ setTimeout(function () {
     miniPesquisa.addEventListener('keydown', function(event) {
         if (event.keyCode === 13) {
             event.preventDefault(); // Previne a ação padrão (se houver)
-            console.log("teste");
-            createButtons();
+            setTimeout(function () {
+                createButtons();
+            }, 1000);
         }
     });
 }, 1000);
