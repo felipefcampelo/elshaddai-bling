@@ -291,7 +291,6 @@ createButtons = function() {
         $("#main-container").append(modalHtml);
     }
 }
-
 createButtons();
 
 /**
@@ -322,7 +321,7 @@ createButtons();
 /**
  * Function para detectar quando a pesquisa acontece
  */
-function detectaPesquisa() {
+setTimeout(function () {
     const miniPesquisa = document.getElementById('pesquisa-mini');
     miniPesquisa.addEventListener('keydown', function(event) {
         if (event.keyCode === 13) {
@@ -331,7 +330,4 @@ function detectaPesquisa() {
             createButtons();
         }
     });
-}
-setTimeout(function () {
-    detectaPesquisa();
 }, 1000);
