@@ -320,7 +320,7 @@ createButtons();
 
 /**
  * Function para detectar quando a pesquisa acontece
- */
+ */ 
 setTimeout(function () {
     const miniPesquisa = document.getElementById('pesquisa-mini');
     miniPesquisa.addEventListener('keydown', function(event) {
