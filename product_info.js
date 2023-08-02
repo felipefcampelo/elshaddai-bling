@@ -235,7 +235,7 @@ function getProdutoData(codigoProduto) {
 /**
  * Function que cria os botões de +INFO em cada produto
  */
-window.createButtons = function() {
+createButtons = function() {
     $(".context-menu-item .btn-group").each(function() {
         // Product ID
         const produtoId = $(this).parent().parent().attr("id");
@@ -318,3 +318,17 @@ createButtons();
         return proxied.apply(this, [].slice.call(arguments));
     };
 })();
+
+/**
+ * Function para detectar quando a pesquisa acontece
+ */
+function detectaPesquisa() {
+    const miniPesquisa = document.getElementById('pesquisa-mini');
+    miniPesquisa.addEventListener('keydown', function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault(); // Previne a ação padrão (se houver)
+            createButtons();
+        }
+    });
+}
+detectaPesquisa();
