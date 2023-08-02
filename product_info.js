@@ -323,7 +323,7 @@ createButtons();
  */ 
 setTimeout(function () {
     $("#pesquisa-mini").on("keydown", function (event) {
-        console.log("Pesquisa realizada apertando Enter");
+        //console.log("Pesquisa realizada apertando Enter");
 
         if (event.keyCode === 13) {
             event.preventDefault(); // Previne a ação padrão (se houver)
@@ -334,7 +334,7 @@ setTimeout(function () {
     });
 
     $("#btn-mini-search").on("click", function () {
-        console.log("Pesquisa realizada clicando na lupa");
+        //console.log("Pesquisa realizada clicando na lupa");
 
         setTimeout(function () {
             createButtons();
